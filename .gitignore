@@ -3,6 +3,16 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# tftpboot
+.idea
+tftpboot/images
+tftpboot/boot/grub2
+tftpboot/boot/memdisk
+tftpboot/boot/pxelinux.cfg
+
+
+
+
 # C extensions
 *.so
 

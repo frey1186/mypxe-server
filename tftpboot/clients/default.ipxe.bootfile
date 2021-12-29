@@ -1,0 +1,60 @@
+#!ipxe
+:start
+menu iPXE Boot Options
+item core Boot the Core.iso for test.
+item alpine3.14  Install Alpine 3.14 
+item shell iPXE shell
+item centos7 Install Centos7 
+item centos8 Install Centos8
+item ubuntu20.04  Install Ubuntu 20.04.3 
+item netboot.xyz  Netboot.xyz Bootloader
+
+choose --default ubuntu20.04 --timeout 20000 option && goto ${option}
+
+:shell
+shell
+
+:core
+######################## core.iso test ###############################
+initrd http://${next-server}/Core.iso
+chain http://${next-server}/memdisk iso
+sanboot
+
+:alpine3.14
+##################### alpine #########################################
+#set mirror https://mirrors.tuna.tsinghua.edu.cn/alpine
+#set img-url ${mirror}/v3.14/releases/x86_64/netboot/
+#set repo-url ${mirror}/v3.14/main
+set img-url http://${next-server}/alpine/iso
+set cmdline modules=loop,squashfs quiet nomodeset
+kernel ${img-url}/boot/vmlinuz-lts alpine_repo=${img-url}/apks modloop=${img-url}/boot/modloop-lts  tty0 
+initrd ${img-url}/boot/initramfs-lts
+
+###########################################################################
+
+
+######################## centos 7 ###################
+:centos7
+set base http://${next-server}
+set iso CentOS-7-x86_64-Minimal-1908
+initrd ${base}/centos7/${iso}/images/pxeboot/initrd.img
+#kernel ${base}/centos7/${iso}/images/pxeboot/vmlinuz inst.repo=${base}/centos7/${iso} ip=dhcp ipv6.disable initrd=initrd.img inst.geoloc=0 devfs=nomount
+kernel ${base}/centos7/${iso}/images/pxeboot/vmlinuz inst.ks=${base}/centos7/centos7.ks ip=dhcp ipv6.disable initrd=initrd.img inst.geoloc=0 devfs=nomount
+boot
+#####################################################
+
+:ubuntu20.04
+set base http://${next-server}/ubuntu20.04.3
+initrd ${base}/initrd
+kernel ${base}/vmlinuz url=${base}/ubuntu-20.04.3-live-server-amd64.iso only-ubiquity ip=dhcp ---
+boot
+
+:netboot.xyz
+dhcp
+chain --autofree http://${next-server}/boot/ipxe/netboot.xyz.lkrn
+
+
+:centos8
+set base https://mirrors.tuna.tsinghua.edu.cn/centos/8/BaseOS/x86_64/
+initrd ${base}/os/images/pxeboot/initrd.img
+kernel ${base}/os/images/pxeboot/vmlinuz initrd=initrd.img ip=dhcp ipv6.disable inst.ks=http://${next-server}/centos8/centos8.ks

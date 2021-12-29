@@ -1,0 +1,29 @@
+#!ipxe
+:start
+menu iPXE Boot Options
+item macip Install from MAC or IP ipxe file
+item default Install from default.ipxe.bootfile file
+item shell iPXE shell
+item local Boot from Local Disk
+item reboot Reboot
+
+choose --default macip --timeout 3000 option && goto ${option}
+
+:shell
+shell
+
+:macip
+set base http://${next-server}/clients
+chain ${base}/${mac}.ipxe.bootfile || chain ${base}/${ip}.ipxe.bootfile ||  goto default
+
+:default
+set base http://${next-server}/clients
+chain ${base}/default.ipxe.bootfile || goto shell
+
+:local
+sanboot --no-describe --drive 0x80
+
+:reboot
+reboot
+
+

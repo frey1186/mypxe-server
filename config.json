@@ -1,0 +1,12 @@
+{
+    "Server": "192.168.100.1",
+    "Offer_addr_start": "192.168.100.120",
+    "Offer_addr_counts": 50,
+    "Netmask": "255.255.255.0",
+    "Boardcast": "192.168.100.255",
+    "Filename": {
+        "x86_64": "boot/ipxe/boot.ipxe",
+        "ppc64le": "boot/grub2/powerpc-ieee1275/core.elf"
+    },
+    "TFTProot": "./tftpboot"
+}

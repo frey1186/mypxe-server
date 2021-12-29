@@ -1,0 +1,8 @@
+#!ipxe
+set base http://${next-server}/images
+set ks_file http://${next-server}/clients/${ip}.ks
+set iso CentOS-7-x86_64-Minimal-1908
+
+initrd ${base}/centos7/${iso}/images/pxeboot/initrd.img
+kernel ${base}/centos7/${iso}/images/pxeboot/vmlinuz inst.ks=${ks_file} ip=dhcp ipv6.disable initrd=initrd.img inst.geoloc=0 devfs=nomount
+boot
